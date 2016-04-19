@@ -18,6 +18,6 @@
 
     <cubewiz.kr.drawline.SignView
         android:id="@+id/signView"
-        android:layout_width="300dp"
-        android:layout_height="100dp" />
+        android:layout_width="600dp"
+        android:layout_height="200dp" />
 </LinearLayout>

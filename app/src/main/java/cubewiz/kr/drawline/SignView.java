@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Base64;
 import android.util.Log;
@@ -22,6 +21,9 @@ public class SignView extends View {
     ArrayList<Vertex> arVertex;
 
     Paint mPaint;       // 페인트 객체 선언
+
+    Bitmap bm;
+    Canvas c;
 
     public SignView(Context context) {
         super(context);
@@ -40,10 +42,7 @@ public class SignView extends View {
 
     private void init() {
         arVertex = new ArrayList<Vertex>();
-        mPaint = new Paint();
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStrokeWidth(7);
-        mPaint.setAntiAlias(true);      // 안티얼라이싱
+
     }
 
     /**
@@ -59,14 +58,14 @@ public class SignView extends View {
                 arVertex.add(new Vertex(event.getX(), event.getY(), true));
                 break;
             case MotionEvent.ACTION_UP: // 터치때는 순간 Base64 변환
-                Bitmap bitmap = Bitmap.createBitmap(320, 480, Bitmap.Config.ARGB_8888);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] byteArray = stream.toByteArray();
+                Log.d("TAG","ByteArray :   "+ byteArray);
 
                 String str = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
-                Log.d("Base64 : ", str);
+                Log.d("TAG","Base64 : "+ str);
                 break;
         }
 
@@ -81,17 +80,25 @@ public class SignView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawColor(Color.WHITE);      // 캔버스 배경색깔 설정
+        canvas.drawColor(Color.WHITE); // 캔버스 배경색깔 설정
+        mPaint = new Paint();
 
+        bm = Bitmap.createBitmap(600, 200, Bitmap.Config.ARGB_8888);
+        c = new Canvas();
+        c.setBitmap(bm);
+
+        mPaint.setColor(Color.BLACK);
+        mPaint.setStrokeWidth(7);
+        mPaint.setAntiAlias(true);      // 안티얼라이싱
 
         // 그리기
         for (int i = 0; i < arVertex.size(); i++) {
             if (arVertex.get(i).draw) {       // 이어서 그리고 있는 중이라면
-                canvas.drawLine(arVertex.get(i - 1).x, arVertex.get(i - 1).y,
+                c.drawLine(arVertex.get(i - 1).x, arVertex.get(i - 1).y,
                         arVertex.get(i).x, arVertex.get(i).y, mPaint);
                 // 이전 좌표에서 다음좌표까지 그린다.
             } else {
-                canvas.drawPoint(arVertex.get(i).x, arVertex.get(i).y, mPaint);
+                c.drawPoint(arVertex.get(i).x, arVertex.get(i).y, mPaint);
                 // 점만 찍는다.
             }
         }
