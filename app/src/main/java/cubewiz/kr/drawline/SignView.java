@@ -83,7 +83,7 @@ public class SignView extends View {
         canvas.drawColor(Color.WHITE); // 캔버스 배경색깔 설정
         mPaint = new Paint();
 
-        bm = Bitmap.createBitmap(600, 200, Bitmap.Config.ARGB_8888);
+        bm = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         c = new Canvas();
         c.setBitmap(bm);
 
@@ -103,6 +103,7 @@ public class SignView extends View {
             }
         }
 
+        canvas.drawBitmap(bm, 0, 0, mPaint);
 
     }
 
